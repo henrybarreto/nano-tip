@@ -1,0 +1,32 @@
+{
+  "name": "nano_tip",
+  "version": "1.0.0",
+  "description": "Alert box for nano tip in lives streams",
+  "scripts": {
+    "dev": "nodemon --exec browserify src/ui/index.jsx -o www/bundle.js -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] ]"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Henry Barreto",
+    "email": "contato@henrybarreto.dev",
+    "url": "https://henrybarreto.dev/"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "babelify": "^10.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "babel": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "nodemon": "^2.0.7",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.2.1",
+    "browserify": "^17.0.0"
+  }
+}
