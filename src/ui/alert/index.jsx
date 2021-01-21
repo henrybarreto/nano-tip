@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
-import makeClientPromise from "../../client";
+import clientWatch from "../../client";
 import {from_raw_to_nano} from "../../nano";
 
 function Alert() {
@@ -13,32 +13,34 @@ function Alert() {
     );
   }
 
-  const [tipAmount, setTipAmount] = useState("0");
-
+  const [tipInfo, setTipInfo] = useState();
+  const [tipAmount, setTipAmount] = useState();
   const [tipAddr, setTipAddr] = useState(wallet);
   const tipImage = "/image.gif"; 
   const tipText = `Thank you for the ${tipAmount} Nano tip!`;
   const tipTime = 6000;
-  let [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const Client = makeClientPromise(tipAddr);
-
-    Client.then((data) => {
-      console.log(data);
+    clientWatch(tipAddr, 
+    (data) => {
+      //setTipInfo(data);
+      setTipInfo(data);
+      console.log(tipInfo);
       const tipAmountNano = from_raw_to_nano(data.amount);
       setTipAmount(tipAmountNano);
-    }).catch((error) => {
+    },
+    (error) => {
       console.error(error);
     });
-  }, [tipAddr]);
+  }, []);
 
   useEffect(() => { // I need fix it
     setIsVisible(true);   // Bug/ Feature
     setTimeout(() => {
       setIsVisible(false);
     }, tipTime);
-  }, [tipAmount]);
+  }, [tipInfo]);
 
   return(
     <>

@@ -35486,45 +35486,42 @@ var _env = _interopRequireDefault(require("../env.json"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function makeClientPromise(address) {
-  var Client = new Promise(function (resolve, reject) {
-    var wsClient = new WebSocket(_env["default"].SERVER_ADDR);
+function clientWatch(address, resolve, reject) {
+  var wsClient = new WebSocket(_env["default"].SERVER_ADDR);
 
-    wsClient.onclose = function () {
-      reject("Connection closed!");
-    };
+  wsClient.onclose = function () {
+    reject("Connection closed!");
+  };
 
-    wsClient.onopen = function (wsEvent) {
-      console.log("connection opened!");
+  wsClient.onopen = function (wsEvent) {
+    console.log("connection opened!");
 
-      try {
-        wsClient.send(JSON.stringify({
-          "address": address,
-          "api_key": "0"
-        }));
-        console.log("Wallet: ".concat(address));
-        console.log("Address sent! Watching...");
-      } catch (e) {
-        reject("Could not send the address!");
-      }
-    };
+    try {
+      wsClient.send(JSON.stringify({
+        "address": address,
+        "api_key": "0"
+      }));
+      console.log("Wallet: ".concat(address));
+      console.log("Address sent! Watching...");
+    } catch (e) {
+      reject("Could not send the address!");
+    }
+  };
 
-    wsClient.onmessage = function (wsMessage) {
-      console.log(wsMessage);
-      var data = wsMessage.data;
-      var dataJSON = JSON.parse(data);
+  wsClient.onmessage = function (wsMessage) {
+    //console.log(wsMessage);
+    var data = wsMessage.data;
+    var dataJSON = JSON.parse(data);
 
-      if (!dataJSON.is_send) {
-        reject("Invalid message type");
-      }
+    if (!dataJSON.is_send) {
+      reject("Invalid message type");
+    }
 
-      resolve(dataJSON);
-    };
-  });
-  return Client;
+    resolve(dataJSON);
+  };
 }
 
-var _default = makeClientPromise;
+var _default = clientWatch;
 exports["default"] = _default;
 
 },{"../env.json":1}],53:[function(require,module,exports){
@@ -35598,35 +35595,41 @@ function Alert() {
     return /*#__PURE__*/_react["default"].createElement("h1", null, "Error: Wallet addr needed!");
   }
 
-  var _useState = (0, _react.useState)("0"),
+  var _useState = (0, _react.useState)(),
       _useState2 = _slicedToArray(_useState, 2),
-      tipAmount = _useState2[0],
-      setTipAmount = _useState2[1];
+      tipInfo = _useState2[0],
+      setTipInfo = _useState2[1];
 
-  var _useState3 = (0, _react.useState)(wallet),
+  var _useState3 = (0, _react.useState)(),
       _useState4 = _slicedToArray(_useState3, 2),
-      tipAddr = _useState4[0],
-      setTipAddr = _useState4[1];
+      tipAmount = _useState4[0],
+      setTipAmount = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(wallet),
+      _useState6 = _slicedToArray(_useState5, 2),
+      tipAddr = _useState6[0],
+      setTipAddr = _useState6[1];
 
   var tipImage = "/image.gif";
   var tipText = "Thank you for the ".concat(tipAmount, " Nano tip!");
   var tipTime = 6000;
 
-  var _useState5 = (0, _react.useState)(false),
-      _useState6 = _slicedToArray(_useState5, 2),
-      isVisible = _useState6[0],
-      setIsVisible = _useState6[1];
+  var _useState7 = (0, _react.useState)(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      isVisible = _useState8[0],
+      setIsVisible = _useState8[1];
 
   (0, _react.useEffect)(function () {
-    var Client = (0, _client["default"])(tipAddr);
-    Client.then(function (data) {
-      console.log(data);
+    (0, _client["default"])(tipAddr, function (data) {
+      //setTipInfo(data);
+      setTipInfo(data);
+      console.log(tipInfo);
       var tipAmountNano = (0, _nano.from_raw_to_nano)(data.amount);
       setTipAmount(tipAmountNano);
-    })["catch"](function (error) {
+    }, function (error) {
       console.error(error);
     });
-  }, [tipAddr]);
+  }, []);
   (0, _react.useEffect)(function () {
     // I need fix it
     setIsVisible(true); // Bug/ Feature
@@ -35634,7 +35637,7 @@ function Alert() {
     setTimeout(function () {
       setIsVisible(false);
     }, tipTime);
-  }, [tipAmount]);
+  }, [tipInfo]);
   return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null, /*#__PURE__*/_react["default"].createElement("div", {
     style: css.container
   }, /*#__PURE__*/_react["default"].createElement("div", null, /*#__PURE__*/_react["default"].createElement(Tip, {

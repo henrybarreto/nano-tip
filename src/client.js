@@ -1,7 +1,6 @@
 import env from "../env.json";
 
-function makeClientPromise(address) {
-  const Client = new Promise((resolve, reject) => {
+function clientWatch(address, resolve, reject) {
     const wsClient = new WebSocket(env.SERVER_ADDR);
     wsClient.onclose = () => {
       reject("Connection closed!")
@@ -17,7 +16,6 @@ function makeClientPromise(address) {
       }
     };
     wsClient.onmessage = (wsMessage) => {
-      console.log(wsMessage);
       const { data } = wsMessage;
       const dataJSON = JSON.parse(data); 
       if(!dataJSON.is_send) {
@@ -25,9 +23,6 @@ function makeClientPromise(address) {
       }
       resolve(dataJSON);
     };
-  });
-
-  return Client;
 }
 
-export default makeClientPromise;
+export default clientWatch;
