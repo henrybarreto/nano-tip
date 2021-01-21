@@ -4,7 +4,7 @@ Alert box for Nano tip in lives streams.
 
 ## How to use?
 
-As this one was inspired in Alert Box from "SteamLabs", the use is similar: create a "browser" inside OBS and add a link with a Nano wallet to alerted when a transaction comes in.
+As this one was inspired in Alert Box from "SteamLabs", the use is similar: create a "browser" inside OBS and add a link with a Nano wallet to be alerted when a transaction comes in.
 
 ### What is Nano?
 
